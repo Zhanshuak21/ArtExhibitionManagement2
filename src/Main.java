@@ -1,6 +1,6 @@
 public class Main {
     public static void main(String[] args) {
-        Artist artist1 = new Artist("Da Vinci", 1452, "Italy");
+        Artist artist1 = new Artist("Da Vinci", 1455, "Italy");
         Artist artist2 = new Artist("Picasso", 1881, "Spanish");
 
         Artwork painting1 = new Artwork("Water Lilies", 1915, 45000000.0, false);
