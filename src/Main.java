@@ -1,55 +1,96 @@
+import java.util.List;
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        Artist artist1 = new Artist("Da Vinci", 1455, "Italy");
-        Artist artist2 = new Artist("Picasso", 1881, "Spanish");
 
-        Artwork painting1 = new Artwork("Water Lilies", 1915, 45000000.0, false);
-        Artwork sculpture1 = new Artwork("Gernica", 1880, 15000000.0, false);
+        Scanner scanner = new Scanner(System.in);
 
-        Gallery gallery = new Gallery("Louvre Exhibition", "Paris", 500);
+        System.out.println("=== CREATE NEW ARTIST ===");
+        System.out.print("Enter artist name: ");
+        String name = scanner.nextLine();
 
-        System.out.println("=== EXHIBITION STATUS ===");
-        artist1.printInfo();
-        artist2.printInfo();
-        painting1.printInfo();
-        sculpture1.printInfo();
-        gallery.printInfo();
+        System.out.print("Enter artist year of birth: ");
+        int yearOfBirth = scanner.nextInt();
+        scanner.nextLine();
 
-        painting1.markSold();
-        painting1.printInfo();
+        System.out.print("Enter artist nationality: ");
+        String nationality = scanner.nextLine();
 
-        System.out.println("\n=== ARTWORK PRICE COMPARISON ===");
+        Artist userArtist = new Artist(name, yearOfBirth, nationality);
+        System.out.println("-> Artist created: " + userArtist.getName() + "\n");
 
-        int comparison = painting1.compareByPrice(sculpture1);
 
-        if (comparison > 0) {
-            System.out.println(painting1.getTitle() + " is more expensive than " + sculpture1.getTitle() + ".");
-        } else if (comparison < 0) {
-            System.out.println(painting1.getTitle() + " is less expensive than " + sculpture1.getTitle() + ".");
-        } else {
-            System.out.println(painting1.getTitle() + " and " + sculpture1.getTitle() + " cost the same.");
+        System.out.println("=== CREATE NEW PAINTING ===");
+        System.out.print("Enter artwork title: ");
+        String title = scanner.nextLine();
+
+        System.out.print("Enter year of creation: ");
+        int year = scanner.nextInt();
+
+        System.out.print("Enter price (in dollars): ");
+        double price = scanner.nextDouble();
+        scanner.nextLine();
+
+        System.out.print("Enter material (e.g., 'Oil on Canvas'): ");
+        String material = scanner.nextLine();
+
+        System.out.print("Enter style (e.g., 'Abstract'): ");
+        String style = scanner.nextLine();
+
+        Painting userPainting = new Painting(title, year, price, false, userArtist, material, style);
+
+        System.out.println("-> Artwork created: " + userPainting.getTitle() + "\n");
+
+        scanner.close();
+
+
+        Artist staticArtist = new Artist("Static Master X", 1700, "Dutch");
+        Sculpture s1 = new Sculpture("Classic Bust", 1750, 950000.0, false, staticArtist, "Marble", 450.0);
+
+
+        System.out.println("--- Polymorphism Demonstration (printInfo) ---");
+        userPainting.printInfo();
+        s1.printInfo();
+
+
+        System.out.println("\n--- 4. Data Pool Demonstration (Gallery) ---");
+
+        Gallery cityExhibition = new Gallery("Annual City Showcase", "New York", 500);
+
+        cityExhibition.addArtwork(userPainting);
+        cityExhibition.addArtwork(s1);
+
+        cityExhibition.printInfo();
+
+        System.out.println("\n--- 5. Sorting and Searching ---");
+
+        cityExhibition.sortByPrice();
+
+        for (Artwork artwork : cityExhibition.getExhibitionPieces()) {
+            String authorName = (artwork.getArtist() != null) ? artwork.getArtist().getName() : "Unknown";
+            System.out.println(artwork.getTitle() + " (Author: " + authorName + ") - $" + String.format("%.2f", artwork.getPrice()));
         }
 
-        System.out.println("\n=== LOOP THROUGH ARTWORKS ===");
-
-        Artwork[] artworks = { painting1, sculpture1 };
-
-        double totalValue = 0.0;
-        Artwork mostExpensive = null;
-
-        for (int i = 0; i < artworks.length; i++) {
-            Artwork currentArtwork = artworks[i];
-
-            System.out.println("Piece " + (i + 1) + ": " + currentArtwork.getTitle() + " priced at $" + currentArtwork.getPrice());
-
-            totalValue += currentArtwork.getPrice();
-
-            if (mostExpensive == null || currentArtwork.getPrice() > mostExpensive.getPrice()) {
-                mostExpensive = currentArtwork;
-            }
+        Artwork mostExpensive = cityExhibition.findMostExpensive();
+        if (mostExpensive != null) {
+            System.out.println("\nMost Expensive Artwork: " + mostExpensive.getTitle());
         }
 
-        System.out.println("Total value of displayed artworks: $" + totalValue);
-        System.out.println("Most expensive artwork: " + mostExpensive.getTitle());
+        userPainting.markSold();
+        List<Artwork> soldWorks = cityExhibition.filterSoldArtworks();
+
+        System.out.println("\n--- Filtering: Sold Artworks (" + soldWorks.size() + ") ---");
+        for (Artwork artwork : soldWorks) {
+            System.out.println(artwork.getTitle() + " (Status: " + artwork.isSold() + ")");
+        }
+
+
+        System.out.println("\n--- 6. toString() and equals() Demonstration ---");
+
+        System.out.println("Painting toString: " + userPainting);
+
+        Artist artistCopy = new Artist(userArtist.getName(), userArtist.getYearOfBirth(), "France");
+        System.out.println("Comparison: userArtist.equals(artistCopy): " + userArtist.equals(artistCopy));
     }
 }
