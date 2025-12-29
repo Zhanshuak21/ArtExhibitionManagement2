@@ -20,16 +20,36 @@ public abstract class Artwork {
 
     public abstract double calculateInsuranceCost();
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-    public int getYear() { return year; }
-    public void setYear(int year) { this.year = year; }
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
-    public boolean isSold() { return isSold; }
-    public void setSold(boolean sold) { isSold = sold; }
-    public Artist getArtist() { return artist; }
-    public void setArtist(Artist artist) { this.artist = artist; }
+    public String getTitle() {
+        return title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public int getYear() {
+        return year;
+    }
+    public void setYear(int year) {
+        this.year = year;
+    }
+    public double getPrice() {
+        return price;
+    }
+    public void setPrice(double price) {
+        this.price = price;
+    }
+    public boolean isSold() {
+        return isSold;
+    }
+    public void setSold(boolean sold) {
+        isSold = sold;
+    }
+    public Artist getArtist() {
+        return artist;
+    }
+    public void setArtist(Artist artist) {
+        this.artist = artist;
+    }
 
     public void markSold() {
         this.isSold = true;

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -6,7 +7,9 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("=== CREATE NEW ARTIST ===");
+        System.out.println("=== STARTING EXHIBITION DATA ENTRY ===");
+
+        System.out.println("\n--- Enter Artist Details ---");
         System.out.print("Enter artist name: ");
         String name = scanner.nextLine();
 
@@ -18,10 +21,9 @@ public class Main {
         String nationality = scanner.nextLine();
 
         Artist userArtist = new Artist(name, yearOfBirth, nationality);
-        System.out.println("-> Artist created: " + userArtist.getName() + "\n");
+        System.out.println("-> Artist created: " + userArtist.getName());
 
-
-        System.out.println("=== CREATE NEW PAINTING ===");
+        System.out.println("\n--- Enter Painting Details ---");
         System.out.print("Enter artwork title: ");
         String title = scanner.nextLine();
 
@@ -39,58 +41,45 @@ public class Main {
         String style = scanner.nextLine();
 
         Painting userPainting = new Painting(title, year, price, false, userArtist, material, style);
-
-        System.out.println("-> Artwork created: " + userPainting.getTitle() + "\n");
-
-        scanner.close();
+        System.out.println("-> Artwork created: " + userPainting.getTitle());
 
 
         Artist staticArtist = new Artist("Static Master X", 1700, "Dutch");
         Sculpture s1 = new Sculpture("Classic Bust", 1750, 950000.0, false, staticArtist, "Marble", 450.0);
 
+        Painting p3 = new Painting("River View", 1880, 50000.0, false, staticArtist, "Watercolor", "Realist");
+        Sculpture s4 = new Sculpture("Small Idol", 100, 100000.0, false, null, "Gold", 5.0);
 
-        System.out.println("--- Polymorphism Demonstration (printInfo) ---");
-        userPainting.printInfo();
-        s1.printInfo();
+        List<Artwork> batchUpload = new ArrayList<>();
+        batchUpload.add(p3);
+        batchUpload.add(s4);
 
 
-        System.out.println("\n--- 4. Data Pool Demonstration (Gallery) ---");
+        System.out.println("\n--- 2. Data Management and Overloading ---");
 
         Gallery cityExhibition = new Gallery("Annual City Showcase", "New York", 500);
 
         cityExhibition.addArtwork(userPainting);
-        cityExhibition.addArtwork(s1);
+
+        cityExhibition.addArtwork(batchUpload);
 
         cityExhibition.printInfo();
 
-        System.out.println("\n--- 5. Sorting and Searching ---");
+        System.out.println("\n--- 3. Sorting and Filtering ---");
 
         cityExhibition.sortByPrice();
 
+        System.out.println("--- Sorted Artworks (Highest Price First) ---");
         for (Artwork artwork : cityExhibition.getExhibitionPieces()) {
-            String authorName = (artwork.getArtist() != null) ? artwork.getArtist().getName() : "Unknown";
-            System.out.println(artwork.getTitle() + " (Author: " + authorName + ") - $" + String.format("%.2f", artwork.getPrice()));
+            System.out.println(artwork.getTitle() + " - $" + String.format("%.2f", artwork.getPrice()));
         }
 
-        Artwork mostExpensive = cityExhibition.findMostExpensive();
-        if (mostExpensive != null) {
-            System.out.println("\nMost Expensive Artwork: " + mostExpensive.getTitle());
-        }
-
-        userPainting.markSold();
+        s1.markSold();
         List<Artwork> soldWorks = cityExhibition.filterSoldArtworks();
+        System.out.println("\nNumber of Sold Artworks: " + soldWorks.size());
 
-        System.out.println("\n--- Filtering: Sold Artworks (" + soldWorks.size() + ") ---");
-        for (Artwork artwork : soldWorks) {
-            System.out.println(artwork.getTitle() + " (Status: " + artwork.isSold() + ")");
-        }
-
-
-        System.out.println("\n--- 6. toString() and equals() Demonstration ---");
-
-        System.out.println("Painting toString: " + userPainting);
-
-        Artist artistCopy = new Artist(userArtist.getName(), userArtist.getYearOfBirth(), "France");
-        System.out.println("Comparison: userArtist.equals(artistCopy): " + userArtist.equals(artistCopy));
+        System.out.println("\n--- 4. Cleanup ---");
+        scanner.close();
+        System.out.println("Scanner closed successfully. Program finished.");
     }
 }

@@ -7,7 +7,7 @@ public class Gallery {
     private String name;
     private String city;
     private int maxCapacity;
-    private List<Artwork> exhibitionPieces;
+    private final List<Artwork> exhibitionPieces;
 
     public Gallery(String name, String city, int maxCapacity) {
         this.name = name;
@@ -16,18 +16,45 @@ public class Gallery {
         this.exhibitionPieces = new ArrayList<>();
     }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
-    public int getMaxCapacity() { return maxCapacity; }
-    public void setMaxCapacity(int maxCapacity) { this.maxCapacity = maxCapacity; }
-    public List<Artwork> getExhibitionPieces() { return exhibitionPieces; }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getCity() {
+        return city;
+    }
+    public void setCity(String city) {
+        this.city = city;
+    }
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+    public void setMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
+    }
+    public List<Artwork> getExhibitionPieces() {
+        return exhibitionPieces;
+    }
 
     public void addArtwork(Artwork artwork) {
         if (artwork != null) {
             this.exhibitionPieces.add(artwork);
             System.out.println("Added: " + artwork.getTitle());
+        }
+    }
+
+    public void addArtwork(List<Artwork> artworks) {
+        if (artworks != null) {
+            int count = 0;
+            for (Artwork artwork : artworks) {
+                if (artwork != null) {
+                    this.exhibitionPieces.add(artwork);
+                    count++;
+                }
+            }
+            System.out.println("Added " + count + " artworks from the list.");
         }
     }
 

@@ -8,10 +8,18 @@ public class Sculpture extends Artwork {
         this.weightKg = weightKg;
     }
 
-    public String getMedium() { return medium; }
-    public void setMedium(String medium) { this.medium = medium; }
-    public double getWeightKg() { return weightKg; }
-    public void setWeightKg(double weightKg) { this.weightKg = weightKg; }
+    public String getMedium() {
+        return medium;
+    }
+    public void setMedium(String medium) {
+        this.medium = medium;
+    }
+    public double getWeightKg() {
+        return weightKg;
+    }
+    public void setWeightKg(double weightKg) {
+        this.weightKg = weightKg;
+    }
 
     @Override
     public double calculateInsuranceCost() {

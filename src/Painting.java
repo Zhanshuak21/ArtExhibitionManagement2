@@ -8,10 +8,18 @@ public class Painting extends Artwork {
         this.style = style;
     }
 
-    public String getMaterial() { return material; }
-    public void setMaterial(String material) { this.material = material; }
-    public String getStyle() { return style; }
-    public void setStyle(String style) { this.style = style; }
+    public String getMaterial() {
+        return material;
+    }
+    public void setMaterial(String material) {
+        this.material = material;
+    }
+    public String getStyle() {
+        return style;
+    }
+    public void setStyle(String style) {
+        this.style = style;
+    }
 
     @Override
     public double calculateInsuranceCost() {
