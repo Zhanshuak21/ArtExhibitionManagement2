@@ -1,6 +1,4 @@
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -9,126 +7,188 @@ public class Main {
     private static final String PASSWORD = "1641j";
 
     public static void main(String[] args) {
-        System.out.println("--- DB Operations Start ---");
-
-        Artist dbArtist = new Artist("Vincent van Gogh", 1853, "Dutch");
-        saveArtist(dbArtist);
-
-        updateArtworkPrice(1, 99000.0);
-        readArtworks();
-        deleteArtwork(5);
-
-        System.out.println("--- DB Operations Finished ---\n");
-
         Scanner scanner = new Scanner(System.in);
-        System.out.println("=== STARTING EXHIBITION DATA ENTRY ===");
+        boolean running = true;
 
-        System.out.println("\n--- Enter Artist Details ---");
-        System.out.print("Enter artist name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter artist year of birth: ");
-        int yearOfBirth = scanner.nextInt();
-        scanner.nextLine();
-        System.out.print("Enter artist nationality: ");
-        String nationality = scanner.nextLine();
+        System.out.println("=== ART GALLERY MANAGEMENT SYSTEM ===");
 
-        Artist userArtist = new Artist(name, yearOfBirth, nationality);
-        System.out.println("-> Artist created: " + userArtist.getName());
+        while (running) {
+            System.out.println("\nChoose an action:");
+            System.out.println("1. List all artworks");
+            System.out.println("2. Add artist and artwork");
+            System.out.println("3. Update artwork price");
+            System.out.println("4. Delete artwork");
+            System.out.println("5. Find most expensive artwork");
+            System.out.println("0. Exit");
+            System.out.print("Your choice: ");
 
-        System.out.println("\n--- Enter Painting Details ---");
-        System.out.print("Enter artwork title: ");
-        String title = scanner.nextLine();
-        System.out.print("Enter year of creation: ");
-        int year = scanner.nextInt();
-        System.out.print("Enter price (in dollars): ");
-        double price = scanner.nextDouble();
-        scanner.nextLine();
-        System.out.print("Enter material (e.g., 'Oil on Canvas'): ");
-        String material = scanner.nextLine();
-        System.out.print("Enter style (e.g., 'Abstract'): ");
-        String style = scanner.nextLine();
+            int choice = scanner.nextInt();
+            scanner.nextLine();
 
-        Painting userPainting = new Painting(title, year, price, false, userArtist, material, style);
-        System.out.println("-> Artwork created: " + userPainting.getTitle());
+            switch (choice) {
+                case 1:
+                    readArtworks();
+                    break;
+                case 2:
+                    System.out.println("\n--- Artist Data ---");
+                    System.out.print("Name: ");
+                    String aName = scanner.nextLine();
+                    System.out.print("Year of birth: ");
+                    int aYear = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("Nationality: ");
+                    String aNat = scanner.nextLine();
 
-        System.out.println("\n--- 2. Data Management and Overloading ---");
-        Gallery cityExhibition = new Gallery("Annual City Showcase", "New York", 500);
+                    Artist artist = new Artist(aName, aYear, aNat);
+                    int artistId = saveArtist(artist);
 
-        Artist staticArtist = new Artist("Static Master X", 1700, "Dutch");
-        Sculpture s1 = new Sculpture("Classic Bust", 1750, 950000.0, false, staticArtist, "Marble", 450.0);
+                    System.out.println("\n--- Artwork Data ---");
+                    System.out.print("Title: ");
+                    String pTitle = scanner.nextLine();
+                    System.out.print("Year of creation: ");
+                    int pYear = scanner.nextInt();
+                    System.out.print("Price: ");
+                    double pPrice = scanner.nextDouble();
+                    scanner.nextLine();
+                    System.out.print("Material: ");
+                    String pMat = scanner.nextLine();
+                    System.out.print("Style: ");
+                    String pStyle = scanner.nextLine();
+                    System.out.print("Is it sold? (true/false): ");
+                    boolean isSold = scanner.nextBoolean();
 
-        Painting p3 = new Painting("River View", 1880, 50000.0, false, staticArtist, "Watercolor", "Realist");
-        Sculpture s4 = new Sculpture("Small Idol", 100, 100000.0, false, null, "Gold", 5.0);
-
-        List<Artwork> batchUpload = new ArrayList<>();
-        batchUpload.add(p3);
-        batchUpload.add(s4);
-        batchUpload.add(s1);
-
-        cityExhibition.addArtwork(userPainting);
-        cityExhibition.addArtwork(batchUpload);
-
-        cityExhibition.printInfo();
-
-        System.out.println("\n--- 3. Sorting and Filtering ---");
-        cityExhibition.sortByPrice();
-
-        System.out.println("--- Sorted Artworks (Highest Price First) ---");
-        for (Artwork artwork : cityExhibition.getExhibitionPieces()) {
-            System.out.println(artwork.getTitle() + " - $" + String.format("%.2f", artwork.getPrice()));
+                    Painting painting = new Painting(pTitle, pYear, pPrice, isSold, artist, pMat, pStyle);
+                    saveArtwork(artistId, painting);
+                    break;
+                case 3:
+                    readArtworks();
+                    System.out.print("\nEnter ID of the artwork you want to change: ");
+                    int idToUpdate = scanner.nextInt();
+                    updateAnything(idToUpdate, scanner);
+                    break;
+                case 4:
+                    readArtworks();
+                    System.out.print("\nEnter ID to delete: ");
+                    int delId = scanner.nextInt();
+                    deleteArtwork(delId);
+                    break;
+                case 5:
+                    findMostExpensiveArtwork();
+                    break;
+                case 0:
+                    running = false;
+                    System.out.println("Exiting system...");
+                    break;
+                default:
+                    System.out.println("Error: please choose a number between 0 and 5.");
+            }
         }
-
-        s1.markSold();
-        List<Artwork> soldWorks = cityExhibition.filterSoldArtworks();
-        System.out.println("\nNumber of Sold Artworks: " + soldWorks.size());
-
-        System.out.println("\n--- 4. Cleanup ---");
         scanner.close();
-        System.out.println("Scanner closed successfully. Program finished.");
     }
 
-
-    public static void saveArtist(Artist artist) {
-        String sql = "INSERT INTO artists(name, year_of_birth, nationality) VALUES(?, ?, ?)";
+    public static int saveArtist(Artist artist) {
+        String sql = "INSERT INTO artists(name, year_of_birth, nationality) VALUES(?, ?, ?) RETURNING id";
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, artist.getName());
             pstmt.setInt(2, artist.getYearOfBirth());
             pstmt.setString(3, artist.getNationality());
-            pstmt.executeUpdate();
-            System.out.println("Artist saved to DB successfully.");
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) return rs.getInt(1);
         } catch (SQLException e) {
-            System.err.println("Error saving artist: " + e.getMessage());
+            System.err.println("Artist save error: " + e.getMessage());
+        }
+        return -1;
+    }
+
+    public static void saveArtwork(int artistId, Painting painting) {
+        String sql = "INSERT INTO artworks(artist_id, title, year, price, type, material, style, is_sold) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, artistId);
+            pstmt.setString(2, painting.getTitle());
+            pstmt.setInt(3, painting.getYear());
+            pstmt.setDouble(4, painting.getPrice());
+            pstmt.setString(5, "Painting");
+            pstmt.setString(6, painting.getMaterial());
+            pstmt.setString(7, painting.getStyle());
+            pstmt.setBoolean(8, painting.isSold());
+            pstmt.executeUpdate();
+            System.out.println("SUCCESS: Artwork added to database.");
+        } catch (SQLException e) {
+            System.err.println("Artwork save error: " + e.getMessage());
         }
     }
 
     public static void readArtworks() {
-        String sql = "SELECT * FROM artworks";
+        String sql = "SELECT id, title, price, material, style, is_sold FROM artworks";
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-
-            System.out.println("List of Artworks from DB:");
+            System.out.println("\n--- CURRENT EXHIBITS ---");
             while (rs.next()) {
-                System.out.println("- ID: " + rs.getInt("id") +
-                        ", Title: " + rs.getString("title") +
-                        ", Price: " + rs.getDouble("price"));
+                System.out.printf("ID: %d | Title: %s | Price: $%.2f | Material: %s | Style: %s | Sold: %b%n",
+                        rs.getInt("id"), rs.getString("title"), rs.getDouble("price"),
+                        rs.getString("material"), rs.getString("style"), rs.getBoolean("is_sold"));
             }
         } catch (SQLException e) {
-            System.err.println("Error reading artworks: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    public static void updateArtworkPrice(int id, double newPrice) {
-        String sql = "UPDATE artworks SET price = ? WHERE id = ?";
+    public static void updateAnything(int id, Scanner scanner) {
+        String selectSql = "SELECT * FROM artworks WHERE id = ?";
+
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setDouble(1, newPrice);
-            pstmt.setInt(2, id);
-            pstmt.executeUpdate();
-            System.out.println("Price updated in DB.");
-        } catch (SQLException e) {
-            System.err.println("Error updating price: " + e.getMessage());
+             PreparedStatement pstmt = conn.prepareStatement(selectSql)) {
+
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("\n--- Editing Artwork ID: " + id + " ---");
+                System.out.println("Current data: Title: " + rs.getString("title") +
+                        ", Price: " + rs.getDouble("price") +
+                        ", Sold: " + rs.getBoolean("is_sold") +
+                        "  Material: " + rs.getString("material") +
+                        ", Style: " + rs.getString("style"));
+
+                System.out.println("\nWhich field to change? (title, price, material, style, is_sold)");
+                System.out.print("Field name: ");
+                scanner.nextLine();
+                String field = scanner.nextLine().toLowerCase();
+
+                System.out.print("Enter new value (or press Enter to keep old): ");
+                String newValue = scanner.nextLine();
+
+                if (newValue.isEmpty()) {
+                    System.out.println("No changes made.");
+                    return;
+                }
+
+                String updateSql = "UPDATE artworks SET " + field + " = ? WHERE id = ?";
+                try (PreparedStatement updatePstmt = conn.prepareStatement(updateSql)) {
+
+                    if (field.equals("price")) {
+                        updatePstmt.setDouble(1, Double.parseDouble(newValue));
+                    } else if (field.equals("is_sold")) {
+                        updatePstmt.setBoolean(1, Boolean.parseBoolean(newValue));
+                    } else if (field.equals("year")) {
+                        updatePstmt.setInt(1, Integer.parseInt(newValue));
+                    } else {
+                        updatePstmt.setString(1, newValue);
+                    }
+
+                    updatePstmt.setInt(2, id);
+                    updatePstmt.executeUpdate();
+                    System.out.println("SUCCESS: Field '" + field + "' updated to '" + newValue + "'");
+                }
+
+            } else {
+                System.out.println("ERROR: Artwork with ID " + id + " not found.");
+            }
+        } catch (Exception e) {
+            System.err.println("Update error: " + e.getMessage());
         }
     }
 
@@ -138,9 +198,23 @@ public class Main {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             int rows = pstmt.executeUpdate();
-            if (rows > 0) System.out.println("Artwork with ID " + id + " deleted.");
+            if (rows > 0) System.out.println("SUCCESS: Artwork deleted from database.");
+            else System.out.println("ERROR: Deletion error, check the ID.");
         } catch (SQLException e) {
-            System.err.println("Error deleting artwork: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void findMostExpensiveArtwork() {
+        String sql = "SELECT title, price FROM artworks ORDER BY price DESC LIMIT 1";
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                System.out.println("\nMOST EXPENSIVE OBJECT: " + rs.getString("title") + " ($" + rs.getDouble("price") + ")");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
