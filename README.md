@@ -11,19 +11,19 @@ through a real-world inspired example.
 /
 
 Key Features:
-Artwork Management:
+domain.Artwork Management:
 - Create artworks (paintings and sculptures)
 - Store artworks in a gallery
 - Mark artworks as sold
 
-Artist Management:
+domain.Artist Management:
 - Create and assign artists to artworks
 - Store artist information (name, birth year, nationality)
 
 Insurance Cost Calculation:
 - Different insurance cost calculation logic for paintings and sculptures
 
-Gallery Management:
+service.Gallery Management:
 - Store artworks in a data pool
 - Sort artworks by price
 - Search for the most expensive artwork
@@ -32,22 +32,22 @@ Gallery Management:
 /
 
 Classes:
-Artwork (Abstract Class)
+domain.Artwork (Abstract Class)
 - Base class for all artworks
 - Contains common fields and abstract method calculateInsuranceCost()
 
-Painting
-- Inherits from Artwork
+domain.Painting
+- Inherits from domain.Artwork
 - Has material and style attributes
 
-Sculpture
-- Inherits from Artwork
+domain.Sculpture
+- Inherits from domain.Artwork
 - Has medium and weight attributes
 
-Artist
+domain.Artist
 - Represents an artist with personal information
 
-Gallery
+service.Gallery
 - Stores and manages a collection of artworks
 
 Main
@@ -58,11 +58,11 @@ Main
 Steps to Run:
 1. Download all .java files:
     - Main.java
-    - Artwork.java
-    - Painting.java
-    - Sculpture.java
-    - Artist.java
-    - Gallery.java
+    - domain.Artwork.java
+    - domain.Painting.java
+    - domain.Sculpture.java
+    - domain.Artist.java
+    - service.Gallery.java
 2. Open IntelliJ IDEA.
 3. Create a new Java project.
 4. Add all files to the src folder.
@@ -88,10 +88,10 @@ Program Execution Flow:
 Assignment Requirements Completed:
 
 OOP Principles:
-- Abstraction: Artwork is an abstract class with an abstract method calculateInsuranceCost()
+- Abstraction: domain.Artwork is an abstract class with an abstract method calculateInsuranceCost()
 - Encapsulation: All class fields are private and accessed via getters and setters
-- Inheritance: Painting and Sculpture extend Artwork
-- Polymorphism: Demonstrated via Method Overriding (e.g., calculateInsuranceCost()) and Method Overloading (e.g., two versions of addArtwork() in Gallery).
+- Inheritance: domain.Painting and domain.Sculpture extend domain.Artwork
+- Polymorphism: Demonstrated via Method Overriding (e.g., calculateInsuranceCost()) and Method Overloading (e.g., two versions of addArtwork() in service.Gallery).
 
 Data Handling:
 - Data pool implemented using ArrayList
@@ -119,4 +119,4 @@ Real-World Logic:
 - Artworks can be sold and tracked
 - Different artwork types have different insurance calculation logic
 - Artists are linked to artworks
-- Gallery manages multiple artworks
+- service.Gallery manages multiple artworks

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Art Exhibition Management</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="topbar">
+    <div class="container topbar__inner">
+        <div class="brand">
+            <div class="brand__logo">AM</div>
+            <div class="brand__text">
+                <div class="brand__title">Art Exhibition Management</div>
+                <div class="brand__subtitle">REST + PostgreSQL</div>
+            </div>
+        </div>
+
+        <div class="topbar__actions">
+            <button class="btn btn--ghost" id="btnRefresh">Обновить</button>
+            <span class="pill" id="apiStatus">API: неизвестно</span>
+        </div>
+    </div>
+</header>
+
+<!-- Toasts -->
+<div id="toasts" class="toasts"></div>
+
+<main class="container grid">
+    <!-- Artists -->
+    <section class="card">
+        <div class="card__header">
+            <div>
+                <h2>Добавить Artist</h2>
+                <p class="muted">POST /artists</p>
+            </div>
+            <button class="btn btn--ghost" id="btnReloadArtists" type="button">Обновить artists</button>
+        </div>
+
+        <form id="artistForm" class="form">
+            <label class="field">
+                <span>Имя</span>
+                <input name="name" placeholder="Van Gogh" required />
+            </label>
+
+            <label class="field">
+                <span>Год рождения</span>
+                <input name="yearOfBirth" type="number" placeholder="1853" required />
+            </label>
+
+            <label class="field">
+                <span>Национальность</span>
+                <input name="nationality" placeholder="Dutch" required />
+            </label>
+
+            <button class="btn" type="submit">Создать артиста</button>
+
+            <div class="hint">
+                <div class="hint__title">Список артистов</div>
+                <div id="artistsList" class="mini-list"></div>
+            </div>
+        </form>
+    </section>
+
+    <!-- Artworks -->
+    <section class="card">
+        <div class="card__header">
+            <h2>Добавить Artwork</h2>
+            <p class="muted">POST /artworks</p>
+        </div>
+
+        <form id="artworkForm" class="form">
+            <div class="row">
+                <label class="field">
+                    <span>Artist</span>
+                    <select name="artistId" id="artistSelect" required></select>
+                </label>
+
+                <label class="field">
+                    <span>Type</span>
+                    <select name="type" id="artworkType">
+                        <option value="Painting">Painting</option>
+                        <option value="Sculpture">Sculpture</option>
+                    </select>
+                </label>
+            </div>
+
+            <label class="field">
+                <span>Title</span>
+                <input name="title" placeholder="Starry Night" required />
+            </label>
+
+            <div class="row">
+                <label class="field">
+                    <span>Year</span>
+                    <input name="year" type="number" placeholder="1889" required />
+                </label>
+                <label class="field">
+                    <span>Price</span>
+                    <input name="price" type="number" step="0.01" placeholder="1000000" required />
+                </label>
+            </div>
+
+            <label class="field field--checkbox">
+                <input name="sold" type="checkbox" />
+                <span>Sold</span>
+            </label>
+
+            <div id="paintingFields" class="group">
+                <div class="group__title">Painting details</div>
+                <div class="row">
+                    <label class="field">
+                        <span>Material</span>
+                        <input name="material" placeholder="Oil" />
+                    </label>
+                    <label class="field">
+                        <span>Style</span>
+                        <input name="style" placeholder="Post-Impressionism" />
+                    </label>
+                </div>
+            </div>
+
+            <div id="sculptureFields" class="group hidden">
+                <div class="group__title">Sculpture details</div>
+                <div class="row">
+                    <label class="field">
+                        <span>Medium</span>
+                        <input name="medium" placeholder="Bronze" />
+                    </label>
+                    <label class="field">
+                        <span>Weight (kg)</span>
+                        <input name="weightKg" type="number" step="0.01" placeholder="180.5" />
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn" type="submit">Создать artwork</button>
+        </form>
+    </section>
+
+    <!-- List -->
+    <section class="card card--wide">
+        <div class="card__header">
+            <div>
+                <h2>Artworks</h2>
+                <p class="muted">GET /artworks · кликни по карточке чтобы выбрать ID</p>
+            </div>
+
+            <div class="row row--tight">
+                <input class="input input--small" id="search" placeholder="Поиск по title..." />
+                <select class="input input--small" id="filterType">
+                    <option value="">Все типы</option>
+                    <option value="Painting">Painting</option>
+                    <option value="Sculpture">Sculpture</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="list" class="list"></div>
+
+        <div class="divider"></div>
+
+        <div class="card__header">
+            <div>
+                <h2>Update / Delete</h2>
+                <p class="muted">PUT /artworks/{id} · DELETE /artworks/{id}</p>
+            </div>
+            <div class="muted small">ID подставится автоматически, если кликнуть по artwork</div>
+        </div>
+
+        <form id="updateForm" class="form form--inline">
+            <label class="field">
+                <span>ID</span>
+                <input name="id" type="number" placeholder="13" required />
+            </label>
+
+            <label class="field">
+                <span>New price</span>
+                <input name="price" type="number" step="0.01" placeholder="2000000" />
+            </label>
+
+            <label class="field">
+                <span>Sold status</span>
+                <select name="soldState">
+                    <option value="">Не менять</option>
+                    <option value="true">Sold</option>
+                    <option value="false">Not sold</option>
+                </select>
+            </label>
+
+            <button class="btn btn--ghost" type="submit">Обновить</button>
+            <button class="btn btn--danger" type="button" id="btnDelete">Удалить</button>
+        </form>
+    </section>
+
+    <section class="card card--wide">
+        <div class="card__header">
+            <h2>Логи</h2>
+            <p class="muted">Технические ответы сервера</p>
+        </div>
+        <pre class="log" id="log"></pre>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container footer__inner">
+        <span class="muted">© Art Exhibition Management</span>
+        <span class="muted">API base: <code id="apiBaseText"></code></span>
+    </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
